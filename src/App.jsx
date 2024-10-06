@@ -64,6 +64,8 @@ class Add extends React.Component {
   handleSubmit(e) {
     e.preventDefault();
     /*Q4. Fetch the passenger details from the add form and call bookTraveller()*/
+    const form = document.forms.addTraveller;
+    this.props.addFunction(form);
   }
 
   render() {
@@ -71,6 +73,7 @@ class Add extends React.Component {
       <form name="addTraveller" onSubmit={this.handleSubmit}>
 	    {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
         <input type="text" name="travellername" placeholder="Name" />
+        <input type="number" name="travellerphone" placeholder="Phone" />
         <button>Add</button>
       </form>
     );
@@ -138,6 +141,12 @@ class TicketToRide extends React.Component {
 
   bookTraveller(passenger) {
 	    /*Q4. Write code to add a passenger to the traveller state variable.*/
+      var newTravellers = this.state.travellers;
+      newTravellers.push({
+        id: 3, name: passenger.travellername.value, phone: passenger.travellerphone.value,
+        bookingTime: new Date(),
+      });
+      this.setState({ travellers: newTravellers });
   }
 
   deleteTraveller(passenger) {
@@ -182,7 +191,7 @@ class TicketToRide extends React.Component {
 		{/*Q3. Code to call component that Displays Travellers.*/}
 		{this.state.selector == 2 && <Display travellers={this.state.travellers} />}
 		{/*Q4. Code to call the component that adds a traveller.*/}
-    {this.state.selector == 3 && <Add />}
+    {this.state.selector == 3 && <Add addFunction={this.bookTraveller} />}
 		{/*Q5. Code to call the component that deletes a traveller based on a given attribute.*/}
     {this.state.selector == 4 && <Delete deleteFunction={this.deleteTraveller} />}
 	</div>
