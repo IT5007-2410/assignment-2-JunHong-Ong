@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon -w server server/server.js",
-    "compile": "babel src --out-dir public",
+    "compile": "nodemon -w src -e jsx --exec babel src --out-dir public",
     "watch": "babel src --out-dir public --watch --verbose",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
