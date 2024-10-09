@@ -13,6 +13,7 @@ const initialTravellers = [
     row: 2, col: 2,
   },
 ];
+var maxId = initialTravellers.length;
 
 
 function TravellerRow(props) {
@@ -76,9 +77,19 @@ class Add extends React.Component {
     return (
       <form name="addTraveller" onSubmit={this.handleSubmit}>
         {/*Q4. Placeholder to enter passenger details. Below code is just an example.*/}
-        <input type="text" name="travellername" placeholder="Name" />
-        <input type="number" name="travellerphone" placeholder="Phone" />
-        <button>Add</button>
+        <label htmlFor="travellername">Full Name: </label>
+        <input type="text" id="travellername" name="travellername" placeholder="Name" required />
+        <br />
+        <label htmlFor="travellerphone">Phone Number: </label>
+        <input type="number" id="travellerphone" name="travellerphone" placeholder="Phone" min="80000000" max="99999999" required />
+        <br />
+        <label htmlFor="seatrow">Seat Row: </label>
+        <input type="number" id="seatrow" name="seatrow" min="1" max="5" required />
+        <br />
+        <label htmlFor="seatcol">Seat Column: </label>
+        <input type="number" id="seatcol" name="seatcol" min="1" max="2" required />
+        <br />
+        <button>Add Traveller</button>
       </form>
     );
   }
@@ -201,11 +212,22 @@ class TicketToRide extends React.Component {
   bookTraveller(passenger) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
     var newTravellers = this.state.travellers;
-    newTravellers.push({
-      id: 3, name: passenger.travellername.value, phone: passenger.travellerphone.value,
-      bookingTime: new Date(),
-    });
-    this.setState({ travellers: newTravellers });
+     if (this.state.travellers.some(traveller => {
+      return traveller.row == passenger.seatrow.value && traveller.col == passenger.seatcol.value;
+    })) {
+      alert("Selected seat is already booked. Please choose a different seat.")
+    } else {
+      newTravellers.push({
+        id: maxId+1,
+        name: passenger.travellername.value,
+        phone: passenger.travellerphone.value,
+        bookingTime: new Date(),
+        row: passenger.seatrow.value,
+        col: passenger.seatcol.value,
+      });
+      this.setState({ travellers: newTravellers });
+      maxId++;
+    }
   }
 
   deleteTraveller(passenger) {
