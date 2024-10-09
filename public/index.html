@@ -47,6 +47,28 @@
     li a:hover {
       background-color: #111;
     }
+
+    .grid-container {
+      width: 200px;
+      display: grid;
+      grid-template-columns: auto auto;
+      justify-content: space-evenly;
+      row-gap: 20px;
+    }
+
+    .seat {
+      height: 50px;
+      width: 50px;
+      border: 1px solid black;
+    }
+
+    .seat.empty {
+      background-color: green;
+    }
+
+    .seat.occupied {
+      background-color: grey;
+    }
   </style>
 </head>
 

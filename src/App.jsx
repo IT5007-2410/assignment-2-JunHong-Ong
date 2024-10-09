@@ -1,12 +1,16 @@
 /*Q1. JS Variable needs to be created here. Below variable is just an example. Try to add more attributes.*/
+const numRows = 5;
+const numColumns = 2;
 const initialTravellers = [
   {
     id: 1, name: 'Jack', phone: 88885555,
     bookingTime: new Date(),
+    row: 1, col: 1,
   },
   {
     id: 2, name: 'Rose', phone: 88884444,
     bookingTime: new Date(),
+    row: 2, col: 2,
   },
 ];
 
@@ -104,6 +108,46 @@ class Delete extends React.Component {
   }
 }
 
+class Seat extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    if (this.props.booked) {
+      return <div className="grid-item seat occupied"></div>;
+    } else {
+      return <div className="grid-item seat empty"></div>;
+    }
+  }
+}
+
+class SeatingArrangement extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    var elements = [];
+    for (var i=0; i < this.props.numRows; i++) {
+      var row = [];
+      for (var j=0; j < this.props.numColumns; j++) {
+        var isBooked = this.props.travellers.some((traveller) => {
+          return traveller.row == i+1 && traveller.col == j+1;
+        });
+        row.push(<Seat key={(i*this.props.numColumns)+j} booked={isBooked} />)
+      }
+      elements.push(row);
+    } 
+
+    return (
+      <div className="grid-container">
+        {elements}
+      </div>
+    )
+  }
+}
+
 class Homepage extends React.Component {
   constructor() {
     super();
@@ -112,7 +156,7 @@ class Homepage extends React.Component {
     return (
       <div>
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
-        HOMEPAGE
+        <SeatingArrangement numRows={numRows} numColumns={numColumns} travellers={this.props.travellers}/>
       </div>);
   }
 }
@@ -186,7 +230,7 @@ class TicketToRide extends React.Component {
         <div>
           {/*Only one of the below four divisions is rendered based on the button clicked by the user.*/}
           {/*Q2 and Q6. Code to call Instance that draws Homepage. Homepage shows Visual Representation of free seats.*/}
-          {this.state.selector == 1 && <Homepage />}
+          {this.state.selector == 1 && <Homepage travellers={this.state.travellers} />}
           {/*Q3. Code to call component that Displays Travellers.*/}
           {this.state.selector == 2 && <Display travellers={this.state.travellers} />}
           {/*Q4. Code to call the component that adds a traveller.*/}
