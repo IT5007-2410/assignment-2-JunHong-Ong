@@ -148,16 +148,32 @@ class SeatingArrangement extends React.Component {
   }
 }
 
+class DisplayFreeSeats extends React.Component {
+  constructor() {
+    super();
+  }
+
+  render() {
+    return (
+      <div>Number of empty seats: {(numRows*numColumns) - this.props.numTravellers}</div>
+    )
+  }
+
+}
+
 class Homepage extends React.Component {
   constructor() {
     super();
   }
+
   render() {
     return (
       <div>
         {/*Q2. Placeholder for Homepage code that shows free seats visually.*/}
         <SeatingArrangement numRows={numRows} numColumns={numColumns} travellers={this.props.travellers}/>
-      </div>);
+        <DisplayFreeSeats numTravellers={this.props.travellers.length}/>
+      </div>
+    )
   }
 }
 class TicketToRide extends React.Component {
