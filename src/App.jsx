@@ -4,17 +4,22 @@ const numColumns = 2;
 const initialTravellers = [
   {
     id: 1, name: 'Jack', phone: 88885555,
-    bookingTime: new Date(),
+    bookingTime: '2024-10-09',
     row: 1, col: 1,
   },
   {
     id: 2, name: 'Rose', phone: 88884444,
-    bookingTime: new Date(),
+    bookingTime: '2024-10-01',
     row: 2, col: 2,
   },
 ];
 var maxId = initialTravellers.length;
-
+var allSeats = new Set();
+for (var i=0; i < numRows; i++) {
+  for (var j=0; j < numColumns; j++) {
+    allSeats.add(`Row: ${i+1}, Col: ${j+1}`)
+  }
+};
 
 function TravellerRow(props) {
   {/*Q3. Placeholder to initialize local variable based on traveller prop.*/ }
@@ -24,8 +29,10 @@ function TravellerRow(props) {
       <td>{props.id}</td>
       <td>{props.name}</td>
       <td>{props.phone}</td>
-      <td>{props.bookingTime.toString()}</td>
-    </tr>
+      <td>{props.bookingTime}</td>
+      <td>{props.seatRow}</td>
+      <td>{props.seatColumn}</td>
+      </tr>
   );
 }
 
@@ -38,6 +45,8 @@ function Display(props) {
       name={traveller.name}
       phone={traveller.phone}
       bookingTime={traveller.bookingTime}
+      seatRow={traveller.row}
+      seatColumn={traveller.col}
     />
   );
 
@@ -50,7 +59,9 @@ function Display(props) {
           <th>Name</th>
           <th>Phone</th>
           <th>Booking Time</th>
-        </tr>
+          <th>Seat Row</th>
+          <th>Seat Column</th>
+          </tr>
       </thead>
       <tbody>
         {/*Q3. write code to call the JS variable defined at the top of this function to render table rows.*/}
@@ -82,6 +93,9 @@ class Add extends React.Component {
         <br />
         <label htmlFor="travellerphone">Phone Number: </label>
         <input type="number" id="travellerphone" name="travellerphone" placeholder="Phone" min="80000000" max="99999999" required />
+        <br />
+        <label htmlFor="bookingtime">Booking Date: </label>
+        <input type="date" id="bookingtime" name="bookingtime" required />
         <br />
         <label htmlFor="seatrow">Seat Row: </label>
         <input type="number" id="seatrow" name="seatrow" min="1" max="5" required />
@@ -212,31 +226,54 @@ class TicketToRide extends React.Component {
   bookTraveller(passenger) {
     /*Q4. Write code to add a passenger to the traveller state variable.*/
     var newTravellers = this.state.travellers;
-     if (this.state.travellers.some(traveller => {
-      return traveller.row == passenger.seatrow.value && traveller.col == passenger.seatcol.value;
-    })) {
-      alert("Selected seat is already booked. Please choose a different seat.")
+    var seatIsBooked = false;
+    var bookedSeats = new Set();
+    this.state.travellers.forEach(traveller => {
+      if ((traveller.row == passenger.seatrow.value) && (traveller.col == passenger.seatcol.value)) {
+        seatIsBooked = true;
+      }
+      bookedSeats.add(`Row: ${traveller.row}, Col: ${traveller.col}`)
+    });
+
+     if (seatIsBooked) {
+      var alertMsg = "Selected seat is already booked. Please choose a different seat.\nAvailable seats:\n"
+      for (var seat of allSeats.difference(bookedSeats)) {
+        alertMsg = alertMsg + ` ${seat}\n`
+      }
+      alert(alertMsg);
     } else {
       newTravellers.push({
         id: maxId+1,
         name: passenger.travellername.value,
         phone: passenger.travellerphone.value,
-        bookingTime: new Date(),
+        bookingTime: passenger.bookingtime.value,
         row: passenger.seatrow.value,
         col: passenger.seatcol.value,
       });
       this.setState({ travellers: newTravellers });
       maxId++;
+      alert("Traveller added successfully.")
     }
   }
 
   deleteTraveller(passenger) {
     /*Q5. Write code to delete a passenger from the traveller state variable.*/
     var newTravellers = [];
+    var foundTraveller = false;
     this.state.travellers.forEach(element => {
-      if (element.name != passenger) { newTravellers.push(element) }
+      if (element.name != passenger) {
+        newTravellers.push(element);
+      } else {
+        foundTraveller = true;
+      }
     });
     this.setState({ travellers: newTravellers });
+
+    if (foundTraveller) {
+      alert(`Traveller ${passenger} deleted successfully.`);
+    } else {
+      alert(`Traveller with name ${passenger} cannot be found.`)
+    }
   }
   render() {
     return (
